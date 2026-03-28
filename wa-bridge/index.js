@@ -1,9 +1,19 @@
 const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
 const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
 const QRCode = require('qrcode-terminal');
 const path = require('path');
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "http://rocha-12.test",
+        methods: ["GET", "POST"]
+    }
+});
+
 app.use(express.json());
 
 const connections = new Map();
@@ -23,13 +33,41 @@ async function connectToWhatsApp(accountId) {
         const { connection, lastDisconnect, qr } = update;
         
         if (qr) {
-            console.log(`\n📱 QR CODE untuk akun: ${accountId}`);
+            console.log(`📱 QR CODE untuk akun: ${accountId}`);
             QRCode.generate(qr, { small: true });
+            
+            // Kirim QR ke Laravel
+            fetch('http://rocha-12.test/api/whatsapp/qr', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    accountId: accountId,
+                    qr: qr
+                })
+            }).catch(err => console.log('Gagal kirim QR ke Laravel:', err.message));
         }
         
         if (connection === 'open') {
             console.log(`✅ Akun ${accountId} TERHUBUNG!`);
             connections.set(accountId, sock);
+            
+            // Kirim status ke Laravel
+            fetch('http://rocha-12.test/api/whatsapp/status-update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    accountId: accountId,
+                    status: 'connected',
+                    phoneNumber: sock.user?.id?.split(':')[0] ?? null
+                })
+            }).catch(err => console.log('Gagal kirim status ke Laravel:', err.message));
+            
+            // EMIT REAL-TIME VIA SOCKET.IO
+            io.emit('device-status', {
+                deviceId: accountId,
+                status: 'connected',
+                phoneNumber: sock.user?.id?.split(':')[0] ?? null
+            });
         }
         
         if (connection === 'close') {
@@ -38,8 +76,15 @@ async function connectToWhatsApp(accountId) {
                 console.log(`🔄 Reconnect ${accountId} dalam 5 detik...`);
                 setTimeout(() => connectToWhatsApp(accountId), 5000);
             } else {
-                console.log(`❌ Akun ${accountId} logout, perlu scan ulang`);
+                console.log(`❌ Akun ${accountId} logout`);
                 connections.delete(accountId);
+                
+                // EMIT DISCONNECT VIA SOCKET.IO
+                io.emit('device-status', {
+                    deviceId: accountId,
+                    status: 'disconnected',
+                    phoneNumber: null
+                });
             }
         }
     });
@@ -81,12 +126,31 @@ app.get('/api/status/:accountId', (req, res) => {
     res.json({ accountId, connected: connections.has(accountId) });
 });
 
+app.post('/api/logout', async (req, res) => {
+    const { accountId } = req.body;
+    
+    const sock = connections.get(accountId);
+    if (sock) {
+        await sock.logout();
+        connections.delete(accountId);
+        res.json({ success: true });
+    } else {
+        res.json({ success: false, error: 'Device not connected' });
+    }
+});
+
+// Socket.io connection
+io.on('connection', (socket) => {
+    console.log('Client connected to socket.io');
+});
+
 const PORT = 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`\n🚀 WA BRIDGE running on port ${PORT}`);
     console.log(`📍 Endpoints:`);
     console.log(`   POST /api/connect`);
     console.log(`   POST /api/send`);
     console.log(`   GET /api/status/:accountId`);
+    console.log(`   Socket.io: ws://localhost:${PORT}`);
     console.log(`\n✅ Siap!\n`);
 });

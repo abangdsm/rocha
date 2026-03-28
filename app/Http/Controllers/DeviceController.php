@@ -46,6 +46,12 @@ class DeviceController extends Controller
         } catch (\Exception $e) {
             // Node.js mungkin belum jalan
         }
+        
+        // Set session untuk menampilkan QR
+        return redirect()->route('devices.index')->with([
+            'success' => 'Device created. Please scan QR code.',
+            'new_device_id' => $device->device_id
+        ]);
 
         return redirect()->route('devices.index')->with('success', 'Device created. Please check terminal for QR code.');
     }
@@ -76,6 +82,25 @@ class DeviceController extends Controller
             return response()->json($status);
         } catch (\Exception $e) {
             return response()->json(['connected' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function disconnect(Device $device)
+    {
+        try {
+            // Panggil Node.js untuk logout
+            Http::post('http://localhost:3000/api/logout', [
+                'accountId' => $device->device_id
+            ]);
+            
+            $device->update([
+                'status' => 'disconnected',
+                'last_connected_at' => null,
+            ]);
+            
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
     }
 

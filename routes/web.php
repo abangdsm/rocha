@@ -26,4 +26,6 @@ Route::get('/send-message', function () {
     return view('send-message');
 })->middleware(['auth'])->name('send-message');
 
+Route::post('/devices/{device}/disconnect', [DeviceController::class, 'disconnect'])->name('devices.disconnect');
+
 require __DIR__ . '/auth.php';
