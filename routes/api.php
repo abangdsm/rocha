@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\WhatsAppController;
 use Illuminate\Support\Facades\Route;
 

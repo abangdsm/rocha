@@ -11,8 +11,10 @@ class WhatsAppController extends Controller
     
     public function connect(Request $request)
     {
+        $accountId = $request->input('accountId') ?? $request->input('account_id');
+        
         $response = Http::post($this->nodeUrl . '/api/connect', [
-            'accountId' => $request->account_id
+            'accountId' => $accountId
         ]);
         
         return $response->json();
@@ -20,10 +22,20 @@ class WhatsAppController extends Controller
     
     public function send(Request $request)
     {
+        $accountId = $request->input('accountId') ?? $request->input('account_id');
+        $to = $request->input('to');
+        $message = $request->input('message');
+        
+        if (!$accountId || !$to || !$message) {
+            return response()->json([
+                'error' => 'accountId, to, and message required'
+            ], 400);
+        }
+        
         $response = Http::post($this->nodeUrl . '/api/send', [
-            'accountId' => $request->account_id,
-            'to' => $request->to,
-            'message' => $request->message
+            'accountId' => $accountId,
+            'to' => $to,
+            'message' => $message
         ]);
         
         return $response->json();

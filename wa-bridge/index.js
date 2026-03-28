@@ -35,10 +35,10 @@ async function connectToWhatsApp(accountId) {
         if (connection === 'close') {
             const shouldReconnect = (lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut);
             if (shouldReconnect) {
-                console.log(`🔄 Reconnect ${accountId}...`);
+                console.log(`🔄 Reconnect ${accountId} dalam 5 detik...`);
                 setTimeout(() => connectToWhatsApp(accountId), 5000);
             } else {
-                console.log(`❌ Akun ${accountId} logout`);
+                console.log(`❌ Akun ${accountId} logout, perlu scan ulang`);
                 connections.delete(accountId);
             }
         }
