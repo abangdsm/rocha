@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BroadcastController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\GroupController;
@@ -34,6 +35,11 @@ Route::middleware('auth')->group(function () {
     
     // Tag routes
     Route::resource('tags', TagController::class);
+
+    // Broadcast routes
+    Route::resource('broadcasts', BroadcastController::class);
+    Route::post('/broadcasts/{broadcast}/cancel', [BroadcastController::class, 'cancel'])->name('broadcasts.cancel');
+    Route::post('/broadcasts/{broadcast}/retry', [BroadcastController::class, 'retry'])->name('broadcasts.retry');
 });
 
 Route::get('/send-message', function () {

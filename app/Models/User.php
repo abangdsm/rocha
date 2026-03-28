@@ -82,4 +82,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Tag::class);
     }
+
+    public function broadcasts()
+    {
+        return $this->hasMany(Broadcast::class);
+    }
 }

@@ -40,6 +40,11 @@
                     <x-nav-link :href="route('tags.index')" :active="request()->routeIs('tags.*')">
                         {{ __('Tags') }}
                     </x-nav-link>
+
+                    <!-- Broadcast -->
+                    <x-nav-link :href="route('broadcasts.index')" :active="request()->routeIs('broadcasts.*')">
+                        {{ __('Broadcasts') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -123,6 +128,11 @@
             <!-- Tags -->
             <x-responsive-nav-link :href="route('tags.index')" :active="request()->routeIs('tags.*')">
                 {{ __('Tags') }}
+            </x-responsive-nav-link>
+
+            <!-- Broadcasts -->
+            <x-responsive-nav-link :href="route('broadcasts.index')" :active="request()->routeIs('broadcasts.*')">
+                {{ __('Broadcasts') }}
             </x-responsive-nav-link>
         </div>
 

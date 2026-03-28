@@ -10,7 +10,12 @@ class Device extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'store_id', 'device_id', 'phone_number', 'status', 'last_connected_at'
+        'user_id',
+        'store_id',
+        'device_id',
+        'phone_number',
+        'status',
+        'last_connected_at'
     ];
 
     protected $casts = [
@@ -30,5 +35,10 @@ class Device extends Model
     public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function broadcasts()
+    {
+        return $this->hasMany(Broadcast::class);
     }
 }
