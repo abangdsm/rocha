@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -20,6 +23,17 @@ Route::middleware('auth')->group(function () {
     // Device routes
     Route::resource('devices', DeviceController::class);
     Route::get('/devices/{device}/refresh-status', [DeviceController::class, 'refreshStatus'])->name('devices.refresh-status');
+
+    // Contact routes
+    Route::resource('contacts', ContactController::class);
+    Route::post('contacts/import', [ContactController::class, 'import'])->name('contacts.import');
+    Route::get('contacts/export', [ContactController::class, 'export'])->name('contacts.export');
+
+    // Group routes
+    Route::resource('groups', GroupController::class);
+    
+    // Tag routes
+    Route::resource('tags', TagController::class);
 });
 
 Route::get('/send-message', function () {

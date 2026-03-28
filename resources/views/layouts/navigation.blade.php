@@ -25,6 +25,21 @@
                     <x-nav-link :href="route('send-message')" :active="request()->routeIs('send-message')">
                         {{ __('Send Message') }}
                     </x-nav-link>
+
+                    <!-- Contacts -->
+                    <x-nav-link :href="route('contacts.index')" :active="request()->routeIs('contacts.*')">
+                        {{ __('Contacts') }}
+                    </x-nav-link>
+
+                    <!-- Groups -->
+                    <x-nav-link :href="route('groups.index')" :active="request()->routeIs('groups.*')">
+                        {{ __('Groups') }}
+                    </x-nav-link>
+
+                    <!-- Tags -->
+                    <x-nav-link :href="route('tags.index')" :active="request()->routeIs('tags.*')">
+                        {{ __('Tags') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -93,6 +108,21 @@
             <!-- Send Message -->
             <x-responsive-nav-link :href="route('send-message')" :active="request()->routeIs('send-message')">
                 {{ __('Send Message') }}
+            </x-responsive-nav-link>
+
+            <!-- Contacts -->
+            <x-responsive-nav-link :href="route('contacts.index')" :active="request()->routeIs('contacts.*')">
+                {{ __('Contacts') }}
+            </x-responsive-nav-link>
+
+            <!-- Groups -->
+            <x-responsive-nav-link :href="route('groups.index')" :active="request()->routeIs('groups.*')">
+                {{ __('Groups') }}
+            </x-responsive-nav-link>
+
+            <!-- Tags -->
+            <x-responsive-nav-link :href="route('tags.index')" :active="request()->routeIs('tags.*')">
+                {{ __('Tags') }}
             </x-responsive-nav-link>
         </div>
 
