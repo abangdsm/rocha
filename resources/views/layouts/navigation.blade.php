@@ -20,6 +20,11 @@
                     <x-nav-link :href="route('devices.index')" :active="request()->routeIs('devices.*')">
                         {{ __('WhatsApp Devices') }}
                     </x-nav-link>
+
+                    <!-- Send Message -->
+                    <x-nav-link :href="route('send-message')" :active="request()->routeIs('send-message')">
+                        {{ __('Send Message') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -83,6 +88,11 @@
             <!-- WhatsApp Devices Menu for Mobile -->
             <x-responsive-nav-link :href="route('devices.index')" :active="request()->routeIs('devices.*')">
                 {{ __('WhatsApp Devices') }}
+            </x-responsive-nav-link>
+
+            <!-- Send Message -->
+            <x-responsive-nav-link :href="route('send-message')" :active="request()->routeIs('send-message')">
+                {{ __('Send Message') }}
             </x-responsive-nav-link>
         </div>
 

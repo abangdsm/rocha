@@ -22,4 +22,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/devices/{device}/refresh-status', [DeviceController::class, 'refreshStatus'])->name('devices.refresh-status');
 });
 
-require __DIR__.'/auth.php';
+Route::get('/send-message', function () {
+    return view('send-message');
+})->middleware(['auth'])->name('send-message');
+
+require __DIR__ . '/auth.php';
